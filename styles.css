@@ -1,0 +1,39 @@
+@import url("https://fonts.googleapis.com/css2?family=Libre+Franklin&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Libre Franklin", sans-serif;
+}
+
+.gridContainer h1 {
+  font-size: 3rem;
+}
+
+.gridContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+
+  height: 100svh;
+}
+
+.gameGrid {
+  display: grid;
+  grid-template: 1fr 1fr 1fr / 1fr 1fr 1fr;
+  background-color: orange;
+  gap: 5px;
+  height: 40rem;
+  width: 40rem;
+}
+
+.gameGrid > * {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 5rem;
+  background-color: white;
+  cursor: pointer;
+}
