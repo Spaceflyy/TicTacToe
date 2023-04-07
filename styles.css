@@ -16,7 +16,6 @@
   flex-direction: column;
   align-items: center;
   justify-content: space-evenly;
-
   height: 100svh;
 }
 
@@ -36,4 +35,5 @@
   font-size: 5rem;
   background-color: white;
   cursor: pointer;
+  user-select: none;
 }
