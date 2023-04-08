@@ -1,53 +1,93 @@
-const displayManager = (() => {
-  let gameBoard = ["", "", "", "", "", "", "", "", ""];
-  let board = document.querySelectorAll(".cell");
-  let currentSymbol;
-  let currentTurnDisplay = document.getElementById("turnDisplay");
+const Player = (name, symbol, turn) => {
+  return { name, symbol, turn };
+};
 
-  const getBoard = () => {
-    return { gameBoard };
+const player1 = Player("Jim", "X", true);
+const player2 = Player("Luke", "O", false);
+
+const gameManager = (() => {
+  let gameBoard = ["", "", "", "", "", "", "", "", ""];
+
+  const GetBoard = () => {
+    return gameBoard;
   };
 
-  const addSymbol = (e) => {
-    if (e.target.innerText == "") {
-      if (player1.turn == true) {
-        currentTurnDisplay.innerText = "Player 2's Turn";
-        currentSymbol = player1.symbol;
-        player1.turn = false;
-        player2.turn = true;
-      } else {
-        currentTurnDisplay.innerText = "Player 1's Turn";
-        currentSymbol = player2.symbol;
-        player2.turn = false;
-        player1.turn = true;
-      }
-      gameBoard[e.target.getAttribute("data")] = currentSymbol;
-      updateBoard();
+  const SetBoard = (position, marker) => {
+    gameBoard[position] = marker;
+  };
+
+  const SetCurrPlayer = () => {
+    if (player1.turn == true) {
+      player1.turn = false;
+      player2.turn = true;
+    } else {
+      player1.turn = true;
+      player2.turn = false;
     }
   };
 
-  board.forEach((element) => {
-    element.addEventListener("click", addSymbol);
-  });
+  const GetCurrPlayer = () => {
+    let currPlayer;
+    if (player1.turn == true) {
+      currPlayer = player1;
+    } else {
+      currPlayer = player2;
+    }
+    return currPlayer;
+  };
 
-  const updateBoard = () => {
-    let currentIndex = 0;
-    board.forEach((element) => {
-      element.innerText = gameBoard[currentIndex];
-      currentIndex++;
+  const CheckWin = (player) => {
+    let winConditions = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [2, 4, 6],
+      [0, 4, 8],
+    ];
+    let board = GetBoard();
+
+    winConditions.forEach((elem) => {
+      if (
+        board[elem[0]] === player.symbol &&
+        board[elem[1]] === player.symbol &&
+        board[elem[2]] === player.symbol
+      ) {
+        console.log("WINNER");
+      }
     });
   };
 
-  return { getBoard };
+  return { CheckWin, SetCurrPlayer, GetCurrPlayer, SetBoard, GetBoard };
 })();
 
-const Player = (symbol, turn) => {
-  return { symbol, turn };
-};
+const displayManager = (() => {
+  let cells = document.querySelectorAll(".cell");
 
-const gameManager = (() => {
-  // displayManager.getBoard();
+  cells.forEach((elem) => {
+    elem.addEventListener("click", () => {
+      if (elem.innerText == "") {
+        gameManager.SetBoard(
+          elem.getAttribute("data"),
+          gameManager.GetCurrPlayer().symbol
+        );
+        gameManager.CheckWin(gameManager.GetCurrPlayer());
+        gameManager.SetCurrPlayer();
+        UpdateDisplay();
+      }
+    });
+  });
+
+  const UpdateDisplay = () => {
+    let currentIndex = 0;
+    let currTurnDisplay = document.querySelector("#turnDisplay");
+    currTurnDisplay.innerText = `${gameManager.GetCurrPlayer().name}'s turn! `;
+    cells.forEach((elem) => {
+      elem.innerText = gameManager.GetBoard()[currentIndex];
+      currentIndex++;
+    });
+  };
+  return { UpdateDisplay };
 })();
-
-const player1 = Player("X", true);
-const player2 = Player("O", false);
