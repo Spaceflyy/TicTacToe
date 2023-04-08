@@ -64,7 +64,14 @@ const gameManager = (() => {
 })();
 
 const displayManager = (() => {
+  const handleForm = (e) => {
+    e.preventDefault();
+  };
+
   let cells = document.querySelectorAll(".cell");
+
+  let form = document.querySelector(".newGameMenu form");
+  form.addEventListener("submit", handleForm);
 
   cells.forEach((elem) => {
     elem.addEventListener("click", () => {

@@ -37,3 +37,39 @@
   cursor: pointer;
   user-select: none;
 }
+
+.newGameMenu {
+  position: fixed;
+  border: rgb(143, 143, 143) 1px solid;
+  background-color: beige;
+  border-radius: 0.25rem;
+  height: max-content;
+  width: max-content;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+}
+
+.newGameMenu form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2rem;
+  align-items: center;
+  height: 100%;
+  padding: 2rem;
+}
+.newGameMenu input[type="text"] {
+  border: none;
+  border-radius: 0.3rem;
+  background-color: rgb(224, 224, 224);
+  height: 1.3rem;
+  margin-left: 1rem;
+}
+
+.newGameMenu input[type="submit"] {
+  padding: 0.5rem;
+  border-radius: 5px;
+}
