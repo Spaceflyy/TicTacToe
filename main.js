@@ -1,12 +1,34 @@
 const Player = (name, symbol, turn) => {
   return { name, symbol, turn };
 };
-
-const player1 = Player("Jim", "X", true);
-const player2 = Player("Luke", "O", false);
+const player1 = Player("", "X", true);
+const player2 = Player("", "O", false);
 
 const gameManager = (() => {
   let gameBoard = ["", "", "", "", "", "", "", "", ""];
+  let gameOver = false;
+  let round = 0;
+  let winner;
+
+  const GetResult = () => {
+    return winner;
+  };
+
+  const SetGameOver = (result) => {
+    gameOver = result;
+  };
+
+  const GetGameOver = () => {
+    return gameOver;
+  };
+
+  const NextRound = () => {
+    round++;
+  };
+
+  const GetRound = () => {
+    return round;
+  };
 
   const GetBoard = () => {
     return gameBoard;
@@ -47,29 +69,71 @@ const gameManager = (() => {
       [2, 4, 6],
       [0, 4, 8],
     ];
-    let board = GetBoard();
 
     winConditions.forEach((elem) => {
       if (
-        board[elem[0]] === player.symbol &&
-        board[elem[1]] === player.symbol &&
-        board[elem[2]] === player.symbol
+        gameBoard[elem[0]] === player.symbol &&
+        gameBoard[elem[1]] === player.symbol &&
+        gameBoard[elem[2]] === player.symbol
       ) {
-        console.log("WINNER");
+        SetGameOver(true);
+        winner = `${player.name} is the winner!`;
       }
     });
+    if (GetRound() == 9 && winner == undefined) {
+      SetGameOver(true);
+      winner = "Its a draw!";
+    }
   };
 
-  return { CheckWin, SetCurrPlayer, GetCurrPlayer, SetBoard, GetBoard };
+  return {
+    NextRound,
+    GetRound,
+    CheckWin,
+    SetCurrPlayer,
+    GetCurrPlayer,
+    SetBoard,
+    GetBoard,
+    GetGameOver,
+    SetGameOver,
+    GetResult,
+  };
 })();
 
 const displayManager = (() => {
   const handleForm = (e) => {
     e.preventDefault();
+    let p1NameField = document.querySelector("#p1Name");
+    let p2NameField = document.querySelector("#p2Name");
+    let grid = document.querySelector(".gridContainer");
+    let menu = document.querySelector(".newGameMenu");
+    if (p1NameField.value == "") {
+      player1.name = "Player 1";
+    } else {
+      player1.name = Capitalize(p1NameField.value);
+    }
+    if (p2NameField.value == "") {
+      player2.name = "Player 2";
+    } else {
+      player2.name = Capitalize(p2NameField.value);
+    }
+    menu.style.display = "none";
+    grid.style.display = "flex";
+    UpdateDisplay();
+  };
+
+  const Capitalize = (word) => {
+    let words = word.split(" ");
+    let newWords = [];
+
+    words.forEach((w) => {
+      let rest = w.slice(1).toLowerCase();
+      newWords.push(w.charAt(0).toUpperCase() + rest);
+    });
+    return newWords.join(" ");
   };
 
   let cells = document.querySelectorAll(".cell");
-
   let form = document.querySelector(".newGameMenu form");
   form.addEventListener("submit", handleForm);
 
@@ -80,9 +144,12 @@ const displayManager = (() => {
           elem.getAttribute("data"),
           gameManager.GetCurrPlayer().symbol
         );
-        gameManager.CheckWin(gameManager.GetCurrPlayer());
-        gameManager.SetCurrPlayer();
-        UpdateDisplay();
+        if (gameManager.GetRound() <= 9 && !gameManager.GetGameOver()) {
+          gameManager.NextRound();
+          gameManager.CheckWin(gameManager.GetCurrPlayer());
+          gameManager.SetCurrPlayer();
+          UpdateDisplay();
+        }
       }
     });
   });
@@ -95,6 +162,8 @@ const displayManager = (() => {
       elem.innerText = gameManager.GetBoard()[currentIndex];
       currentIndex++;
     });
+    if (gameManager.GetGameOver()) {
+      currTurnDisplay.innerText = gameManager.GetResult();
+    }
   };
-  return { UpdateDisplay };
 })();

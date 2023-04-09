@@ -7,12 +7,12 @@
   font-family: "Libre Franklin", sans-serif;
 }
 
-.gridContainer h1 {
+h1 {
   font-size: 3rem;
 }
 
 .gridContainer {
-  display: flex;
+  display: none;
   flex-direction: column;
   align-items: center;
   justify-content: space-evenly;
@@ -21,14 +21,14 @@
 
 .gameGrid {
   display: grid;
-  grid-template: 1fr 1fr 1fr / 1fr 1fr 1fr;
+  grid-template: repeat(3, 1fr) / repeat(3, 1fr);
   background-color: orange;
   gap: 5px;
-  height: 40rem;
-  width: 40rem;
+  height: 30rem;
+  width: 30rem;
 }
 
-.gameGrid > * {
+.gameGrid .cell {
   display: flex;
   align-items: center;
   justify-content: center;
