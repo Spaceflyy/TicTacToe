@@ -78,6 +78,7 @@ const gameManager = (() => {
       ) {
         SetGameOver(true);
         winner = `${player.name} is the winner!`;
+        displayManager.showWin(elem);
       }
     });
     if (GetRound() == 9 && winner == null) {
@@ -93,6 +94,7 @@ const gameManager = (() => {
     winner = null;
     player1.turn = true;
     player2.turn = false;
+    displayManager.ResetDivColour();
   };
 
   return {
@@ -160,6 +162,7 @@ const displayManager = (() => {
     let menu = document.querySelector(".newGameMenu");
     menu.style.display = "block";
     grid.style.display = "none";
+    gameManager.RestartGame();
   });
 
   cells.forEach((elem) => {
@@ -179,6 +182,15 @@ const displayManager = (() => {
     });
   });
 
+  const showWin = (winningIndexes) => {
+    let currentIndex = 0;
+    cells.forEach((cell) => {
+      if (cell.getAttribute("data") == winningIndexes[currentIndex]) {
+        cell.style.backgroundColor = "#1F8C2D";
+        currentIndex++;
+      }
+    });
+  };
   const UpdateDisplay = () => {
     let currentIndex = 0;
     let currTurnDisplay = document.querySelector("#turnDisplay");
@@ -191,4 +203,12 @@ const displayManager = (() => {
       currTurnDisplay.innerText = gameManager.GetResult();
     }
   };
+
+  const ResetDivColour = () => {
+    cells.forEach((cell) => {
+      cell.style.backgroundColor = "";
+    });
+  };
+
+  return { ResetDivColour, showWin };
 })();
