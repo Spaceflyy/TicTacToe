@@ -8,7 +8,7 @@ const gameManager = (() => {
   let gameBoard = ["", "", "", "", "", "", "", "", ""];
   let gameOver = false;
   let round = 0;
-  let winner;
+  let winner = null;
 
   const GetResult = () => {
     return winner;
@@ -80,10 +80,19 @@ const gameManager = (() => {
         winner = `${player.name} is the winner!`;
       }
     });
-    if (GetRound() == 9 && winner == undefined) {
+    if (GetRound() == 9 && winner == null) {
       SetGameOver(true);
       winner = "Its a draw!";
     }
+  };
+
+  const RestartGame = () => {
+    gameBoard = ["", "", "", "", "", "", "", "", ""];
+    gameOver = false;
+    round = 0;
+    winner = null;
+    player1.turn = true;
+    player2.turn = false;
   };
 
   return {
@@ -97,6 +106,7 @@ const gameManager = (() => {
     GetGameOver,
     SetGameOver,
     GetResult,
+    RestartGame,
   };
 })();
 
@@ -136,6 +146,13 @@ const displayManager = (() => {
   let cells = document.querySelectorAll(".cell");
   let form = document.querySelector(".newGameMenu form");
   form.addEventListener("submit", handleForm);
+
+  let rstartbtn = document.querySelector("#restartBtn");
+  rstartbtn.addEventListener("click", () => {
+    gameManager.RestartGame();
+
+    UpdateDisplay();
+  });
 
   cells.forEach((elem) => {
     elem.addEventListener("click", () => {

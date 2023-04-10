@@ -69,7 +69,21 @@ h1 {
   margin-left: 1rem;
 }
 
-.newGameMenu input[type="submit"] {
+.newGameMenu input[type="submit"],
+button {
   padding: 0.5rem;
   border-radius: 5px;
+}
+
+#buttons {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+@media (max-width: 500px) {
+  .gameGrid {
+    height: 18rem;
+    width: 18em;
+  }
 }
