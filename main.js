@@ -150,8 +150,15 @@ const displayManager = (() => {
   let rstartbtn = document.querySelector("#restartBtn");
   rstartbtn.addEventListener("click", () => {
     gameManager.RestartGame();
-
     UpdateDisplay();
+  });
+
+  let changeNameBtn = document.querySelector("#newGameBtn");
+  changeNameBtn.addEventListener("click", () => {
+    let grid = document.querySelector(".gridContainer");
+    let menu = document.querySelector(".newGameMenu");
+    menu.style.display = "block";
+    grid.style.display = "none";
   });
 
   cells.forEach((elem) => {

@@ -67,6 +67,7 @@ h1 {
   background-color: rgb(224, 224, 224);
   height: 1.3rem;
   margin-left: 1rem;
+  padding: 0.5rem;
 }
 
 .newGameMenu input[type="submit"],
@@ -77,13 +78,25 @@ button {
 
 #buttons {
   display: flex;
+  margin: 1rem;
   gap: 2rem;
-  align-items: center;
+}
+
+#title {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  gap: 1rem;
+  padding: 1rem;
 }
 
 @media (max-width: 500px) {
   .gameGrid {
-    height: 18rem;
-    width: 18em;
+    height: 20rem;
+    width: 20em;
+  }
+
+  .gameGrid .cell {
+    font-size: 4rem;
   }
 }
