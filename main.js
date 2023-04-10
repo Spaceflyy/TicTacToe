@@ -113,6 +113,7 @@ const gameManager = (() => {
 const displayManager = (() => {
   const handleForm = (e) => {
     e.preventDefault();
+    form.reset();
     let p1NameField = document.querySelector("#p1Name");
     let p2NameField = document.querySelector("#p2Name");
     let grid = document.querySelector(".gridContainer");
