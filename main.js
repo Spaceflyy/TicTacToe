@@ -1,6 +1,7 @@
 const Player = (name, symbol, turn) => {
   return { name, symbol, turn };
 };
+
 const player1 = Player("", "X", true);
 const player2 = Player("", "O", false);
 
@@ -14,20 +15,8 @@ const gameManager = (() => {
     return winner;
   };
 
-  const SetGameOver = (result) => {
-    gameOver = result;
-  };
-
   const GetGameOver = () => {
     return gameOver;
-  };
-
-  const NextRound = () => {
-    round++;
-  };
-
-  const GetRound = () => {
-    return round;
   };
 
   const GetBoard = () => {
@@ -76,14 +65,15 @@ const gameManager = (() => {
         gameBoard[elem[1]] === player.symbol &&
         gameBoard[elem[2]] === player.symbol
       ) {
-        SetGameOver(true);
+        gameOver = true;
         winner = `${player.name} is the winner!`;
         displayManager.showWin(elem);
       }
     });
-    if (GetRound() == 9 && winner == null) {
-      SetGameOver(true);
+    if (round == 9 && winner == null) {
+      gameOver = true;
       winner = "Its a draw!";
+      console.log("FIRE");
     }
   };
 
@@ -97,25 +87,52 @@ const gameManager = (() => {
     displayManager.ResetDivColour();
   };
 
+  const PlayRound = (cellIndex, playerSymbol) => {
+    gameBoard[cellIndex] = playerSymbol;
+    if (round <= 9 && !GetGameOver()) {
+      round++;
+      CheckWin(GetCurrPlayer());
+      SetCurrPlayer();
+      displayManager.UpdateDisplay();
+      if (player2.name == "Computer") {
+        PlayAIMove();
+      }
+    }
+  };
+
+  const PlayAIMove = () => {
+    if (round <= 9 && !GetGameOver()) {
+      let randomSpace = 0;
+      let emptySpaces = [];
+      for (let i = 0; i < gameBoard.length; i++) {
+        if (gameBoard[i] == "") {
+          emptySpaces.push(i);
+        }
+      }
+      randomSpace = emptySpaces[Math.floor(Math.random() * emptySpaces.length)];
+      gameBoard[randomSpace] = player2.symbol;
+      round++;
+      CheckWin(GetCurrPlayer());
+      SetCurrPlayer();
+      displayManager.UpdateDisplay();
+    }
+  };
   return {
-    NextRound,
-    GetRound,
-    CheckWin,
-    SetCurrPlayer,
     GetCurrPlayer,
-    SetBoard,
     GetBoard,
     GetGameOver,
-    SetGameOver,
     GetResult,
     RestartGame,
+    PlayRound,
+    PlayAIMove,
+    SetBoard,
   };
 })();
 
 const displayManager = (() => {
   const handleForm = (e) => {
     e.preventDefault();
-    form.reset();
+
     let p1NameField = document.querySelector("#p1Name");
     let p2NameField = document.querySelector("#p2Name");
     let grid = document.querySelector(".gridContainer");
@@ -132,6 +149,7 @@ const displayManager = (() => {
     }
     menu.style.display = "none";
     grid.style.display = "flex";
+    form.reset();
     UpdateDisplay();
   };
 
@@ -164,20 +182,34 @@ const displayManager = (() => {
     grid.style.display = "none";
     gameManager.RestartGame();
   });
+  const AIGame = () => {
+    let p1NameField = document.querySelector("#p1Name");
+    let grid = document.querySelector(".gridContainer");
+    let menu = document.querySelector(".newGameMenu");
+    if (p1NameField.value == "") {
+      player1.name = "Player 1";
+    } else {
+      player1.name = Capitalize(p1NameField.value);
+    }
+
+    player2.name = "Computer";
+
+    menu.style.display = "none";
+    grid.style.display = "flex";
+    form.reset();
+    UpdateDisplay();
+  };
+
+  let vsComputerbtn = document.querySelector("#VSCompBtn");
+  vsComputerbtn.addEventListener("click", AIGame);
 
   cells.forEach((elem) => {
     elem.addEventListener("click", () => {
       if (elem.innerText == "") {
-        gameManager.SetBoard(
+        gameManager.PlayRound(
           elem.getAttribute("data"),
           gameManager.GetCurrPlayer().symbol
         );
-        if (gameManager.GetRound() <= 9 && !gameManager.GetGameOver()) {
-          gameManager.NextRound();
-          gameManager.CheckWin(gameManager.GetCurrPlayer());
-          gameManager.SetCurrPlayer();
-          UpdateDisplay();
-        }
       }
     });
   });
@@ -210,5 +242,5 @@ const displayManager = (() => {
     });
   };
 
-  return { ResetDivColour, showWin };
+  return { UpdateDisplay, ResetDivColour, showWin };
 })();
