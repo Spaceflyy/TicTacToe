@@ -73,7 +73,6 @@ const gameManager = (() => {
     if (round == 9 && winner == null) {
       gameOver = true;
       winner = "Its a draw!";
-      console.log("FIRE");
     }
   };
 
